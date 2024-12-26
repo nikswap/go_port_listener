@@ -42,6 +42,14 @@ func handleConnection(conn net.Conn, port string) {
 	timeoutDuration := 60 * time.Second
 	conn.SetReadDeadline(time.Now().Add(timeoutDuration))
 	_, err := conn.Read(buf)
+	lastNull := 0
+	for idx := len(buf) - 1; idx >= 0; idx-- {
+		if buf[idx] != 0x00 {
+			break
+		}
+		lastNull = idx
+	}
+	buf = buf[:lastNull+1]
 	if err != nil {
 		fmt.Println(err)
 		return
