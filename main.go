@@ -50,7 +50,7 @@ func start_to_listen(port string) {
 
 func handleConnection(conn net.Conn, port string) {
 	defer conn.Close()
-	fmt.Println("DATA ON PORT", port)
+	fmt.Printf("DATA ON PORT: %s FROM HOST: %s\n", port, conn.RemoteAddr().String())
 
 	buf := make([]byte, 1024)
 	timeoutDuration := 60 * time.Second
@@ -68,5 +68,5 @@ func handleConnection(conn net.Conn, port string) {
 		fmt.Println(err)
 		return
 	}
-	fmt.Printf("Received on %s: %s", port, base64.StdEncoding.EncodeToString(buf))
+	fmt.Printf("Received on %s: %s\n", port, base64.StdEncoding.EncodeToString(buf))
 }
