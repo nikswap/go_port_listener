@@ -3,13 +3,27 @@ package main
 import (
 	"encoding/base64"
 	"fmt"
+	"log"
 	"net"
+	"os"
 	"strconv"
 	"time"
 )
 
+func CheckError(err error) {
+	if err != nil {
+		fmt.Println(err)
+		log.Fatal(err)
+		os.Exit(-1)
+	}
+}
+
 func main() {
-	for port := 1024; port < 30000; port++ {
+	startPort, err := strconv.Atoi(os.Args[1])
+	CheckError(err)
+	endPort, err := strconv.Atoi(os.Args[2])
+	CheckError(err)
+	for port := startPort; port < endPort; port++ {
 		go start_to_listen(":" + strconv.Itoa(port))
 	}
 	for {
@@ -54,5 +68,5 @@ func handleConnection(conn net.Conn, port string) {
 		fmt.Println(err)
 		return
 	}
-	fmt.Printf("Received: %s", base64.StdEncoding.EncodeToString(buf))
+	fmt.Printf("Received on %s: %s", port, base64.StdEncoding.EncodeToString(buf))
 }
